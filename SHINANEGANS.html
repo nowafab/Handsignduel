@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Connecting to an Opponent</title>
+  <style>
+    body {
+      background-color: white;
+      text-align: center;
+      font-family: Arial, sans-serif;
+    }
+    
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column; /* Added flex-direction to stack elements vertically */
+      position: relative; /* Added position property to enable positioning of the image */
+    }
+    
+    .text {
+      font-size: 24px;
+      font-weight: bold;
+      position: relative; /* Added position property to enable z-index */
+      z-index: 2; /* Set a higher z-index value to place it above the image */
+    }
+    
+    .image {
+      position: absolute; /* Position the image */
+      top: 40%; /* Position the image at the vertical center */
+      left: 50%; /* Position the image at the horizontal center */
+      transform: translate(-50%, -50%); /* Center the image precisely */
+      z-index: 1; /* Set a lower z-index value to place it below the text */
+    }
+    
+    @keyframes blink {
+      0%, 100% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.5;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <img class="image" src="images/image3.gif" alt="Image 3"> <!-- Added the image element -->
+    <div class="text" id="connectingText">Connecting to an Opponent</div>
+  </div>
+  
+  <script>
+    const connectingText = document.getElementById("connectingText");
+
+    function animateText() {
+      connectingText.innerText = "Connecting to an Opponent";
+      setTimeout(() => {
+        connectingText.innerText = "Connecting to an Opponent.";
+      }, 1000);
+      setTimeout(() => {
+        connectingText.innerText = "Connecting to an Opponent..";
+      }, 2000);
+      setTimeout(() => {
+        connectingText.innerText = "Connecting to an Opponent...";
+      }, 3000);
+      setTimeout(animateText, 4000); // Add this line to create a loop
+    }
+
+    animateText();
+
+    const randomDelay = getRandomDelay(3000, 12000);
+    setTimeout(() => {
+      window.location.href = "gamepage.html";
+    }, randomDelay);
+
+    function getRandomDelay(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+  </script>
+</body>
+</html>
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Rock Paper Scissors</title>
+  <style>
+    body {
+      background-color: white;
+      text-align: center;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .container {
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      transform: translateX(-50%);
+    }
+    
+    .rectangle {
+      display: inline-block;
+      margin: 10px;
+      padding: 20px;
+      width: 200px;
+      background-color: orange;
+      color: white;
+      text-align: center;
+      font-weight: bold;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      box-shadow: 0px 0px 2px black;
+    }
+    
+    .rectangle:hover {
+      background-color: #e66e00;
+    }
+    
+    .centered-image {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    
+    .image5 {
+      position: absolute;
+      top: 20%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 1;
+    }
+    
+    .image6 {
+      position: absolute;
+      top: 60%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+    }
+    
+    .result {
+      position: fixed;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-weight: bold;
+      font-size: 60px;
+    }
+    
+    .win {
+      color: green;
+    }
+    
+    .lose {
+      color: red;
+    }
+    
+    #play-again-button {
+      display: none; /* Hide the button initially */
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: orange;
+      color: white;
+      font-weight: bold;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      box-shadow: 0px 0px 2px black;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 120%; /* Position the button below the result */
+      z-index: 3;
+    }
+    
+    #play-again-button:hover {
+      background-color: #e66e00;
+    }
+
+    #win-streak {
+      margin-top: 20px;
+      font-size: 24px;
+      font-weight: bold;
+      display: none; /* Hide the win streak initially */
+      white-space: nowrap;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 70%; /* Position the win streak below the button */
+    }
+
+    #game-history {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 16px;
+      display: none; /* Hide the game history initially */
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+  <div class="rectangle" onclick="handleClick('Rock')">Rock</div>
+  <div class="rectangle" onclick="handleClick('Paper')">Paper</div>
+  <div class="rectangle" onclick="handleClick('Scissors')">Scissors</div>
+</div>
+
+<img class="centered-image image5" src="images/image5.png" alt="Image 5">
+<img class="centered-image image6" src="images/image6.png" alt="Image 6">
+
+<div class="result">
+  <span id="outcome"></span>
+  <button id="play-again-button" onclick="resetGame()">Play again</button>
+  <div id="win-streak"></div>
+</div>
+
+<div id="game-history"></div>
+
+<div id="timer"></div>
+
+<script>
+  var gameActive = false; // Track the game state
+  var winStreak = 0; // Track the win streak
+  var gameHistory = []; // Store the game history
+  var playerChoice = ''; // Store the player's choice
+  var opponentChoice = ''; // Store Opponent's choice
+  var choicesMade = false; // Track if choices have been made
+
+  // Timer logic
+  var timerElement = document.getElementById("timer");
+  var seconds = 0;
+  var timerInterval;
+
+  function updateTimer() {
+    seconds++;
+    timerElement.textContent = "Time: " + seconds + "s";
+
+    // Redirect to index.html when timer value is 10 seconds
+    if (seconds === 10) {
+      window.location.href = "index.html";
+    }
+
+    // Generate Opponent's choice randomly between 3 and 9 seconds
+    if (seconds >= getRandomNumber(3, 9) && opponentChoice === '') {
+      generateOpponentChoice();
+    }
+  }
+
+  function startTimer() {
+    timerInterval = setInterval(updateTimer, 1000);
+  }
+
+  function stopTimer() {
+    clearInterval(timerInterval);
+  }
+
+  function resetTimer() {
+    seconds = 0;
+    timerElement.textContent = "Time: 0s";
+  }
+
+  function handleClick(choice) {
+    if (gameActive || choicesMade) {
+      return; // Don't allow input if the game is active or choices have been made
+    }
+
+    playerChoice = choice;
+
+    if (opponentChoice !== '') {
+      choicesMade = true;
+      resolveGame();
+      updateImages();
+    }
+  }
+
+  function resolveGame() {
+    gameActive = true; // Set the game state to active
+
+    var imageElement = document.querySelector('.image5');
+    var playerImage = document.querySelector('.image6');
+    var outcomeElement = document.querySelector('#outcome');
+    var playAgainButton = document.querySelector('#play-again-button');
+    var winStreakElement = document.querySelector('#win-streak');
+
+    setTimeout(function () {
+      var gameResult = {
+        playerChoice: playerChoice,
+        opponentChoice: opponentChoice,
+        outcome: ''
+      };
+
+      if (playerChoice === opponentChoice) {
+        gameResult.outcome = "It's a tie!";
+        outcomeElement.classList.remove('win', 'lose');
+      } else if (
+        (playerChoice === 'Rock' && opponentChoice === 'Scissors') ||
+        (playerChoice === 'Paper' && opponentChoice === 'Rock') ||
+        (playerChoice === 'Scissors' && opponentChoice === 'Paper')
+      ) {
+        gameResult.outcome = 'You win!';
+        outcomeElement.classList.remove('lose');
+        outcomeElement.classList.add('win');
+        winStreak++; // Increase the win streak
+      } else {
+        gameResult.outcome = 'You lose!';
+        outcomeElement.classList.remove('win');
+        outcomeElement.classList.add('lose');
+        winStreak = 0; // Reset the win streak
+      }
+
+      gameHistory.push(gameResult); // Add the game result to the history
+
+      outcomeElement.textContent = gameResult.outcome; // Set the outcome text
+
+      imageElement.style.display = 'none';
+      playerImage.style.display = 'none';
+      playAgainButton.style.display = 'block';
+      winStreakElement.style.display = 'block';
+
+      updateWinStreak();
+      updateGameHistory();
+
+      stopTimer(); // Stop the timer
+    }, 1000);
+  }
+
+  function generateOpponentChoice() {
+    var choices = ['Rock', 'Paper', 'Scissors'];
+    var randomIndex = Math.floor(Math.random() * choices.length);
+    opponentChoice = choices[randomIndex];
+
+    if (playerChoice !== '') {
+      choicesMade = true;
+      resolveGame();
+      updateImages();
+    }
+  }
+
+  function updateImages() {
+    var imageElement5 = document.querySelector('.image5');
+    var imageElement6 = document.querySelector('.image6');
+
+    if (opponentChoice === 'Rock') {
+      imageElement5.src = 'images/rock1.png';
+    } else if (opponentChoice === 'Paper') {
+      imageElement5.src = 'images/paper1.png';
+    } else if (opponentChoice === 'Scissors') {
+      imageElement5.src = 'images/scissor1.png';
+    }
+
+    if (playerChoice === 'Rock') {
+      imageElement6.src = 'images/rock2.png';
+    } else if (playerChoice === 'Paper') {
+      imageElement6.src = 'images/paper2.png';
+    } else if (playerChoice === 'Scissors') {
+      imageElement6.src = 'images/scissor2.png';
+    }
+  }
+
+  function resetGame() {
+    gameActive = false; // Set the game state to inactive
+    playerChoice = ''; // Reset the player's choice
+    opponentChoice = ''; // Reset Opponent's choice
+    choicesMade = false; // Reset choices made state
+
+    var imageElement = document.querySelector('.image5');
+    var playerImage = document.querySelector('.image6');
+    var outcomeElement = document.querySelector('#outcome');
+    var playAgainButton = document.querySelector('#play-again-button');
+    var winStreakElement = document.querySelector('#win-streak');
+
+    imageElement.src = 'images/image5.png';
+    playerImage.src = 'images/image6.png';
+    imageElement.style.display = 'block';
+    playerImage.style.display = 'block';
+    playAgainButton.style.display = 'none';
+    winStreakElement.style.display = 'none';
+
+    outcomeElement.textContent = '';
+
+    clearGameHistory();
+
+    resetTimer(); // Reset the timer
+    startTimer(); // Start the timer
+  }
+
+  function updateWinStreak() {
+    var winStreakElement = document.querySelector('#win-streak');
+    winStreakElement.textContent = 'Current win streak: ' + winStreak;
+  }
+
+  function updateGameHistory() {
+    var gameHistoryElement = document.querySelector('#game-history');
+    gameHistoryElement.innerHTML = '';
+
+    for (var i = 0; i < gameHistory.length; i++) {
+      var gameResult = gameHistory[i];
+      var gameResultElement = document.createElement('p');
+      gameResultElement.textContent = 'Player: ' + gameResult.playerChoice + ', Opponent: ' + gameResult.opponentChoice + ', Outcome: ' + gameResult.outcome;
+      gameHistoryElement.appendChild(gameResultElement);
+    }
+
+    gameHistoryElement.style.display = 'block';
+  }
+
+  function clearGameHistory() {
+    gameHistory = [];
+    var gameHistoryElement = document.querySelector('#game-history');
+    gameHistoryElement.style.display = 'none';
+  }
+
+  function getRandomNumber(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  startTimer(); // Start the timer
+</script>
+</body>
+</html>
+
+
+
+
